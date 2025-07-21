@@ -1,0 +1,74 @@
+{
+  "id": "custom-task-example",
+  "title": "Custom Learning Task",
+  "description": "A sample custom task configuration",
+  "emoji": "🎯",
+  "language": "de",
+  
+  "theme": {
+    "primaryColor": "blue",
+    "backgroundGradient": "from-blue-50 to-indigo-100",
+    "characterBg": "bg-blue-100"
+  },
+  
+  "character": {
+    "name": "Max",
+    "emoji": "👨‍🏫",
+    "role": "Lehrer"
+  },
+  
+  "learningObjective": "Custom learning objective here",
+  
+  "initialization": {
+    "selectedItem": null
+  },
+
+  "workflow": [
+    {
+      "id": "welcome",
+      "advanceOn": ["option_selected"],
+      "tools": [
+        {
+          "type": "character_message",
+          "config": {
+            "message": "Willkommen zu deiner benutzerdefinierten Aufgabe!",
+            "autoAdvance": false
+          }
+        },
+        {
+          "type": "options_selector",
+          "config": {
+            "instruction": "Wähle eine Option:",
+            "options": [
+              { "text": "Ich bin bereit!", "emoji": "✅" },
+              { "text": "Erzähl mir mehr", "emoji": "ℹ️" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "completion",
+      "advanceOn": [],
+      "tools": [
+        {
+          "type": "completion_message",
+          "config": {
+            "content": {
+              "title": "Aufgabe abgeschlossen!",
+              "message": "Du hast die benutzerdefinierte Aufgabe erfolgreich abgeschlossen!",
+              "emoji": "🎉"
+            },
+            "actions": [
+              {
+                "text": "Nochmal versuchen",
+                "className": "bg-blue-600 hover:bg-blue-700 text-white",
+                "handler": "context => context.resetTask()"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

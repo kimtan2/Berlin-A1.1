@@ -1,0 +1,1117 @@
+{
+  "places": {
+    "baeckerei": {
+      "name": "Bäckerei",
+      "emoji": "🥖",
+      "description": "Learn to order bread and pastries like a local",
+      "position": { "x": 45, "y": 60 },
+      "totalVisits": 6,
+      "visits": [
+        {
+          "visitNumber": 1,
+          "title": "Basic Greeting & Single Item Order",
+          "objectives": ["Begrüßen", "sich verabschieden"],
+          "newVocabulary": [
+            { "german": "Guten Morgen", "english": "Good morning" },
+            { "german": "Ich hätte gern", "english": "I would like" },
+            { "german": "ein Brötchen", "english": "a bread roll" },
+            { "german": "Auf Wiedersehen", "english": "Goodbye" }
+          ],
+          "availableItems": ["Brötchen", "Brot", "Croissant"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen!",
+              "audio": "/audio/baecker_guten_morgen.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "How do you respond?",
+              "options": [
+                { "text": "Guten Morgen", "correct": true, "feedback": "Perfect! A polite morning greeting." },
+                { "text": "Hallo", "correct": true, "feedback": "Good, though 'Guten Morgen' is more common in the morning." },
+                { "text": "Hi", "correct": false, "feedback": "Too casual for a German bakery. Try 'Guten Morgen'." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Wie kann ich Ihnen helfen?",
+              "audio": "/audio/baecker_help.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Order a bread roll:",
+              "options": [
+                { "text": "Ich hätte gern ein Brötchen", "correct": true, "feedback": "Excellent! Very polite way to order." },
+                { "text": "Ein Brötchen, bitte", "correct": true, "feedback": "Good! Adding 'bitte' is always nice." },
+                { "text": "Brötchen", "correct": false, "feedback": "Too short. Try 'Ich hätte gern ein Brötchen'." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Hier, bitte.",
+              "audio": "/audio/baecker_here.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen", "correct": true, "feedback": "Perfect formal goodbye!" },
+                { "text": "Tschüss", "correct": true, "feedback": "Good, though 'Auf Wiedersehen' is more formal." },
+                { "text": "Bye", "correct": false, "feedback": "Use German: 'Auf Wiedersehen'" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/baecker_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 2,
+          "title": "Adding Quantities & Politeness",
+          "objectives": ["Begrüßen", "sich verabschieden", "sich bedanken", "Zahlen 1-20"],
+          "newVocabulary": [
+            { "german": "zwei", "english": "two" },
+            { "german": "drei", "english": "three" },
+            { "german": "bitte", "english": "please" },
+            { "german": "Danke", "english": "Thank you" }
+          ],
+          "availableItems": ["Brötchen", "Brot", "Croissant"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen!",
+              "audio": "/audio/baecker_guten_morgen.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Greet the baker:",
+              "options": [
+                { "text": "Guten Morgen", "correct": true, "feedback": "Great!" },
+                { "text": "Guten Morgen. Ich hätte gern zwei Brötchen, bitte", "correct": true, "feedback": "Excellent! You combined greeting with order." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Sehr gerne. Hier sind zwei Brötchen.",
+              "audio": "/audio/baecker_very_glad.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Thank the baker:",
+              "options": [
+                { "text": "Danke", "correct": true, "feedback": "Perfect!" },
+                { "text": "Vielen Dank", "correct": true, "feedback": "Very polite!" },
+                { "text": "Thank you", "correct": false, "feedback": "Use German: 'Danke'" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/baecker_goodbye.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen", "correct": true, "feedback": "Perfect!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 3,
+          "title": "Price Inquiry & Understanding",
+          "objectives": ["Begrüßen", "sich verabschieden", "sich bedanken", "W-Fragen: Was", "Zahlen 1-20"],
+          "newVocabulary": [
+            { "german": "Was kostet...?", "english": "How much does ... cost?" },
+            { "german": "Euro", "english": "Euro" },
+            { "german": "Vollkornbrot", "english": "Whole grain bread" },
+            { "german": "Kuchen", "english": "Cake" }
+          ],
+          "availableItems": ["Brötchen", "Brot", "Croissant", "Vollkornbrot", "Kuchen"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen! Wie kann ich Ihnen helfen?",
+              "audio": "/audio/baecker_morning_help.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Ask about the price of cake:",
+              "options": [
+                { "text": "Was kostet der Kuchen?", "correct": true, "feedback": "Perfect question!" },
+                { "text": "Wie viel kostet Kuchen?", "correct": true, "feedback": "Good alternative way to ask!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Der Kuchen kostet vier Euro.",
+              "audio": "/audio/baecker_cake_price.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Order a bread roll and the cake:",
+              "options": [
+                { "text": "Ich hätte gern ein Brötchen und den Kuchen, bitte", "correct": true, "feedback": "Excellent ordering!" },
+                { "text": "Ein Brötchen und Kuchen, bitte", "correct": true, "feedback": "Good, but 'den Kuchen' is more precise." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Hier, bitte.",
+              "audio": "/audio/baecker_here.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Thank and say goodbye:",
+              "options": [
+                { "text": "Danke. Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/baecker_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 4,
+          "title": "Payment Process & Change",
+          "objectives": ["Begrüßen", "sich verabschieden", "sich bedanken", "Zahlen 1-20", "Verben: einfache Konjugation"],
+          "newVocabulary": [
+            { "german": "Das macht...", "english": "That costs/comes to..." },
+            { "german": "Hier sind... Euro", "english": "Here are ... euros" },
+            { "german": "zurück", "english": "back (change)" },
+            { "german": "Brezel", "english": "Pretzel" },
+            { "german": "Apfelstrudel", "english": "Apple strudel" }
+          ],
+          "availableItems": ["Brötchen", "Brot", "Croissant", "Vollkornbrot", "Kuchen", "Brezel", "Apfelstrudel"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen! Wie kann ich Ihnen helfen?",
+              "audio": "/audio/baecker_morning_help.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order a pretzel:",
+              "options": [
+                { "text": "Ich hätte gern eine Brezel, bitte", "correct": true, "feedback": "Great ordering!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Das macht zwei Euro.",
+              "audio": "/audio/baecker_two_euros.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Pay with exact money:",
+              "options": [
+                { "text": "Hier sind zwei Euro", "correct": true, "feedback": "Perfect payment!" },
+                { "text": "Hier sind drei Euro", "correct": true, "feedback": "You'll get change back!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Danke!",
+              "audio": "/audio/baecker_thank_you.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/baecker_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 5,
+          "title": "Multiple Items & Full Transaction",
+          "objectives": ["Begrüßen", "sich verabschieden", "sich bedanken", "Zahlen 1-20", "Verben: einfache Konjugation", "Pronomen"],
+          "newVocabulary": [
+            { "german": "Sonst noch etwas?", "english": "Anything else?" },
+            { "german": "Das ist alles", "english": "That's everything" },
+            { "german": "Schwarzbrot", "english": "Dark bread" },
+            { "german": "Gebäck", "english": "Pastries" }
+          ],
+          "availableItems": ["Brötchen", "Brot", "Croissant", "Vollkornbrot", "Kuchen", "Brezel", "Apfelstrudel", "Schwarzbrot", "Gebäck"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen! Wie kann ich Ihnen helfen?",
+              "audio": "/audio/baecker_morning_help.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order bread:",
+              "options": [
+                { "text": "Ich hätte gern Brot, bitte", "correct": true, "feedback": "Good ordering!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Sonst noch etwas?",
+              "audio": "/audio/baecker_anything_else.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Say that's everything:",
+              "options": [
+                { "text": "Nein, danke. Das ist alles", "correct": true, "feedback": "Perfect response!" },
+                { "text": "Das ist alles", "correct": true, "feedback": "Good!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Das macht drei Euro.",
+              "audio": "/audio/baecker_three_euros.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Pay:",
+              "options": [
+                { "text": "Hier sind drei Euro", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Danke! Auf Wiedersehen!",
+              "audio": "/audio/baecker_thank_goodbye.mp3"
+            },
+            {
+              "id": 8,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 6,
+          "title": "Natural Conversation Flow",
+          "objectives": ["All previous objectives integrated"],
+          "newVocabulary": [
+            { "german": "Haben Sie einen schönen Tag!", "english": "Have a nice day!" }
+          ],
+          "availableItems": "All items",
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Guten Morgen! Wie kann ich Ihnen helfen?",
+              "audio": "/audio/baecker_morning_help.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order multiple items:",
+              "options": [
+                { "text": "Ich hätte gern zwei Brötchen und einen Kaffee, bitte", "correct": true, "feedback": "Excellent complex order!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Sonst noch etwas?",
+              "audio": "/audio/baecker_anything_else.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Ask about price and add item:",
+              "options": [
+                { "text": "Was kostet Kuchen?", "correct": true, "feedback": "Good question!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Kuchen kostet drei Euro.",
+              "audio": "/audio/baecker_cake_price.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Add cake and finish order:",
+              "options": [
+                { "text": "Ich hätte gern Kuchen. Das ist alles", "correct": true, "feedback": "Perfect complex transaction!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Das macht sieben Euro.",
+              "audio": "/audio/baecker_seven_euros.mp3"
+            },
+            {
+              "id": 8,
+              "speaker": "user",
+              "prompt": "Pay:",
+              "options": [
+                { "text": "Hier sind sieben Euro", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 9,
+              "speaker": "npc",
+              "text": "Danke! Haben Sie einen schönen Tag!",
+              "audio": "/audio/baecker_nice_day.mp3"
+            },
+            {
+              "id": 10,
+              "speaker": "user",
+              "prompt": "Respond and say goodbye:",
+              "options": [
+                { "text": "Danke! Auf Wiedersehen!", "correct": true, "feedback": "Excellent! You've mastered bakery conversations!" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "rewe": {
+      "name": "Rewe Supermarket",
+      "emoji": "🛒",
+      "description": "Apply your bakery skills while grocery shopping",
+      "position": { "x": 75, "y": 35 },
+      "totalVisits": 6,
+      "unlockRequirement": "Complete Bäckerei Visit 3",
+      "visits": [
+        {
+          "visitNumber": 1,
+          "title": "Basic Greeting & One Item",
+          "objectives": ["Transfer bakery greetings to supermarket"],
+          "newVocabulary": [
+            { "german": "Kassierer", "english": "Cashier" },
+            { "german": "Milch", "english": "Milk" },
+            { "german": "Äpfel", "english": "Apples" }
+          ],
+          "availableItems": ["Milch", "Brot", "Äpfel"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Greet and mention you want milk:",
+              "options": [
+                { "text": "Hallo! Ich hätte gern Milch", "correct": true, "feedback": "Great! You used your bakery skills here!" },
+                { "text": "Hallo", "correct": true, "feedback": "Good start, but you can add your order too." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Hier, bitte.",
+              "audio": "/audio/kassierer_here.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Thank the cashier:",
+              "options": [
+                { "text": "Danke", "correct": true, "feedback": "Perfect! Just like at the bakery." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/kassierer_goodbye.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Excellent transfer of skills!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 2,
+          "title": "Adding Numbers & Politeness",
+          "objectives": ["Transfer quantities and politeness from bakery"],
+          "newVocabulary": [],
+          "availableItems": ["Milch", "Brot", "Äpfel"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order two apples politely:",
+              "options": [
+                { "text": "Hallo! Ich hätte gern zwei Äpfel, bitte", "correct": true, "feedback": "Perfect! You're applying bakery skills naturally." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Hier sind zwei Äpfel.",
+              "audio": "/audio/kassierer_two_apples.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Thank the cashier:",
+              "options": [
+                { "text": "Danke", "correct": true, "feedback": "Great!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Bitte. Auf Wiedersehen!",
+              "audio": "/audio/kassierer_please_goodbye.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Excellent!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 3,
+          "title": "Price Question",
+          "objectives": ["Transfer price questions from bakery"],
+          "newVocabulary": [
+            { "german": "Bananen", "english": "Bananas" },
+            { "german": "Käse", "english": "Cheese" }
+          ],
+          "availableItems": ["Milch", "Brot", "Äpfel", "Bananen", "Käse"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Ask about cheese price:",
+              "options": [
+                { "text": "Hallo! Was kostet Käse?", "correct": true, "feedback": "Perfect! Same question as in the bakery." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Käse kostet drei Euro.",
+              "audio": "/audio/kassierer_cheese_price.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Order the cheese:",
+              "options": [
+                { "text": "Ich hätte gern Käse, bitte", "correct": true, "feedback": "Excellent ordering!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Hier, bitte.",
+              "audio": "/audio/kassierer_here.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Thank and say goodbye:",
+              "options": [
+                { "text": "Danke. Auf Wiedersehen!", "correct": true, "feedback": "Perfect transaction!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/kassierer_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 4,
+          "title": "Payment Process",
+          "objectives": ["Transfer payment skills from bakery"],
+          "newVocabulary": [
+            { "german": "Butter", "english": "Butter" },
+            { "german": "Eier", "english": "Eggs" }
+          ],
+          "availableItems": ["Milch", "Brot", "Äpfel", "Bananen", "Käse", "Butter", "Eier"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order eggs and butter:",
+              "options": [
+                { "text": "Hallo! Ich hätte gern Eier und Butter, bitte", "correct": true, "feedback": "Great complex order!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Das macht fünf Euro.",
+              "audio": "/audio/kassierer_five_euros.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Pay exactly:",
+              "options": [
+                { "text": "Hier sind fünf Euro", "correct": true, "feedback": "Perfect payment, just like at the bakery!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Danke!",
+              "audio": "/audio/kassierer_thank_you.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Excellent!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/kassierer_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 5,
+          "title": "Multiple Items",
+          "objectives": ["Transfer multiple item ordering from bakery"],
+          "newVocabulary": [
+            { "german": "Fleisch", "english": "Meat" },
+            { "german": "Wasser", "english": "Water" }
+          ],
+          "availableItems": ["Milch", "Brot", "Äpfel", "Bananen", "Käse", "Butter", "Eier", "Fleisch", "Wasser"],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Order bread and water:",
+              "options": [
+                { "text": "Hallo! Ich hätte gern Brot und Wasser, bitte", "correct": true, "feedback": "Perfect ordering!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Sonst noch etwas?",
+              "audio": "/audio/kassierer_anything_else.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Say that's everything:",
+              "options": [
+                { "text": "Nein, danke. Das ist alles", "correct": true, "feedback": "Perfect! You learned this at the bakery." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Das macht vier Euro.",
+              "audio": "/audio/kassierer_four_euros.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Pay:",
+              "options": [
+                { "text": "Hier sind vier Euro", "correct": true, "feedback": "Excellent!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Danke! Auf Wiedersehen!",
+              "audio": "/audio/kassierer_thank_goodbye.mp3"
+            },
+            {
+              "id": 8,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 6,
+          "title": "Complete Shopping",
+          "objectives": ["Confident shopping using all transferred skills"],
+          "newVocabulary": [],
+          "availableItems": "All 9 items",
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/kassierer_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Complex order with multiple items:",
+              "options": [
+                { "text": "Hallo! Ich hätte gern zwei Äpfel und Milch, bitte", "correct": true, "feedback": "Excellent complex order!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Sonst noch etwas?",
+              "audio": "/audio/kassierer_anything_else.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Ask about cheese price and add it:",
+              "options": [
+                { "text": "Was kostet Käse?", "correct": true, "feedback": "Good price inquiry!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Käse kostet drei Euro.",
+              "audio": "/audio/kassierer_cheese_price.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Add cheese and finish:",
+              "options": [
+                { "text": "Ich hätte gern Käse. Das ist alles", "correct": true, "feedback": "Perfect complex shopping transaction!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Das macht sechs Euro.",
+              "audio": "/audio/kassierer_six_euros.mp3"
+            },
+            {
+              "id": 8,
+              "speaker": "user",
+              "prompt": "Pay:",
+              "options": [
+                { "text": "Hier sind sechs Euro", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 9,
+              "speaker": "npc",
+              "text": "Danke! Auf Wiedersehen!",
+              "audio": "/audio/kassierer_thank_goodbye.mp3"
+            },
+            {
+              "id": 10,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Excellent! You've mastered supermarket shopping!" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "park": {
+      "name": "Tiergarten Park",
+      "emoji": "🌳",
+      "description": "Meet people and practice social conversations",
+      "position": { "x": 30, "y": 25 },
+      "totalVisits": 5,
+      "unlockRequirement": "Complete Bäckerei Visit 2",
+      "visits": [
+        {
+          "visitNumber": 1,
+          "title": "Basic Name Introduction",
+          "objectives": ["sich vorstellen: Name", "Begrüßen; sich verabschieden"],
+          "newVocabulary": [
+            { "german": "Wie heißen Sie?", "english": "What is your name?" },
+            { "german": "Ich heiße...", "english": "My name is..." }
+          ],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo!",
+              "audio": "/audio/person_hello.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Greet and introduce yourself:",
+              "options": [
+                { "text": "Hallo! Ich heiße [Your name]", "correct": true, "feedback": "Great introduction!" },
+                { "text": "Hallo", "correct": true, "feedback": "Good, but you could add your name too." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Ich heiße Anna.",
+              "audio": "/audio/person_anna.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Ask for her name (formal):",
+              "options": [
+                { "text": "Wie heißen Sie?", "correct": true, "feedback": "Perfect formal question!" },
+                { "text": "Wie heißt du?", "correct": true, "feedback": "Good, but 'Sie' is more polite with strangers." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Anna. Auf Wiedersehen!",
+              "audio": "/audio/person_anna_goodbye.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            }
+          ]
+        },
+        {
+          "visitNumber": 2,
+          "title": "Adding Age",
+          "objectives": ["sich vorstellen: Name, Alter", "Begrüßen; sich verabschieden", "Zahlen 1-20"],
+          "newVocabulary": [
+            { "german": "Ich bin ... Jahre alt", "english": "I am ... years old" },
+            { "german": "Wie alt sind Sie?", "english": "How old are you?" }
+          ],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo! Ich heiße Tom.",
+              "audio": "/audio/person_tom.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Greet and introduce yourself:",
+              "options": [
+                { "text": "Hallo! Ich heiße [Your name]", "correct": true, "feedback": "Great!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Wie alt sind Sie?",
+              "audio": "/audio/person_how_old.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Say your age and ask back:",
+              "options": [
+                { "text": "Ich bin [age] Jahre alt. Wie alt sind Sie?", "correct": true, "feedback": "Perfect exchange!" },
+                { "text": "Ich bin zwanzig Jahre alt", "correct": true, "feedback": "Good, but you could ask back too." }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Ich bin zwanzig Jahre alt.",
+              "audio": "/audio/person_twenty.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/person_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 3,
+          "title": "Where Are You From?",
+          "objectives": ["sich vorstellen: Name, Herkunft, Alter", "W-Fragen: Woher", "Zahlen 1-20"],
+          "newVocabulary": [
+            { "german": "Woher kommen Sie?", "english": "Where are you from?" },
+            { "german": "Ich komme aus...", "english": "I come from..." },
+            { "german": "Deutschland", "english": "Germany" },
+            { "german": "Spanien", "english": "Spain" }
+          ],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo! Wie heißen Sie?",
+              "audio": "/audio/person_what_name.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Introduce yourself and ask back:",
+              "options": [
+                { "text": "Ich heiße [Your name]. Wie heißen Sie?", "correct": true, "feedback": "Perfect reciprocal introduction!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Ich heiße Maria. Woher kommen Sie?",
+              "audio": "/audio/person_maria_where.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Say where you're from and ask back:",
+              "options": [
+                { "text": "Ich komme aus Deutschland. Woher kommen Sie?", "correct": true, "feedback": "Excellent exchange!" },
+                { "text": "Ich komme aus Amerika. Woher kommen Sie?", "correct": true, "feedback": "Great international conversation!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Ich komme aus Spanien.",
+              "audio": "/audio/person_spain.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/person_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 4,
+          "title": "How Are You?",
+          "objectives": ["sich vorstellen: Name, Herkunft, Alter", "nach dem Befinden fragen", "sich bedanken", "W-Fragen: Wie, Woher"],
+          "newVocabulary": [
+            { "german": "Wie geht es Ihnen?", "english": "How are you?" },
+            { "german": "Gut, danke", "english": "Good, thank you" }
+          ],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo! Wie geht es Ihnen?",
+              "audio": "/audio/person_how_are_you.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Respond and ask back:",
+              "options": [
+                { "text": "Gut, danke. Wie geht es Ihnen?", "correct": true, "feedback": "Perfect polite exchange!" },
+                { "text": "Gut, danke", "correct": true, "feedback": "Good, but asking back is even more polite." }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Auch gut. Ich heiße Lisa.",
+              "audio": "/audio/person_lisa.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Introduce yourself and ask where she's from:",
+              "options": [
+                { "text": "Ich heiße [Your name]. Woher kommen Sie?", "correct": true, "feedback": "Great conversation flow!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Ich komme aus Italien.",
+              "audio": "/audio/person_italy.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Auf Wiedersehen!",
+              "audio": "/audio/person_goodbye.mp3"
+            }
+          ]
+        },
+        {
+          "visitNumber": 5,
+          "title": "Complete Introduction",
+          "objectives": ["All previous objectives integrated"],
+          "newVocabulary": [
+            { "german": "Schön!", "english": "Nice!/Great!" }
+          ],
+          "dialogue": [
+            {
+              "id": 1,
+              "speaker": "npc",
+              "text": "Hallo! Wie geht es Ihnen?",
+              "audio": "/audio/person_how_are_you.mp3"
+            },
+            {
+              "id": 2,
+              "speaker": "user",
+              "prompt": "Full polite response with introduction:",
+              "options": [
+                { "text": "Gut, danke. Ich heiße [Your name]. Wie heißen Sie?", "correct": true, "feedback": "Excellent natural conversation!" }
+              ]
+            },
+            {
+              "id": 3,
+              "speaker": "npc",
+              "text": "Ich heiße David. Wie alt sind Sie?",
+              "audio": "/audio/person_david_age.mp3"
+            },
+            {
+              "id": 4,
+              "speaker": "user",
+              "prompt": "Share age and ask about origin:",
+              "options": [
+                { "text": "Ich bin [age] Jahre alt. Woher kommen Sie?", "correct": true, "feedback": "Perfect conversation management!" }
+              ]
+            },
+            {
+              "id": 5,
+              "speaker": "npc",
+              "text": "Ich komme aus Deutschland. Und Sie?",
+              "audio": "/audio/person_germany_and_you.mp3"
+            },
+            {
+              "id": 6,
+              "speaker": "user",
+              "prompt": "Share your origin:",
+              "options": [
+                { "text": "Ich komme aus [country]", "correct": true, "feedback": "Great!" }
+              ]
+            },
+            {
+              "id": 7,
+              "speaker": "npc",
+              "text": "Schön! Auf Wiedersehen!",
+              "audio": "/audio/person_nice_goodbye.mp3"
+            },
+            {
+              "id": 8,
+              "speaker": "user",
+              "prompt": "Say goodbye:",
+              "options": [
+                { "text": "Auf Wiedersehen!", "correct": true, "feedback": "Perfect! You've mastered social introductions!" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
