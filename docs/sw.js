@@ -1,5 +1,5 @@
 // Glutbibliothek service worker: everything is cached on first visit, so the app opens and reads offline.
-const VERSION = 'glut-v4';
+const VERSION = 'glut-v5';
 const CORE = [
   "./",
   "index.html",
