@@ -9,7 +9,7 @@ import hashlib, json, os, sys, time, urllib.error, urllib.request
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs"))
 API = "https://api.vercel.com"
-TEAM = os.environ.get("VERCEL_TEAM_ID", "team_YgC1sIRjvd8RQBx0DGlpYByL")
+TEAM = os.environ.get("VERCEL_TEAM_ID", "team_tzN6wIEnRA9gNU5mcdi5LliZ")
 PROJECT = os.environ.get("VERCEL_PROJECT", "glutbibliothek")
 TOKEN = os.environ.get("VERCEL_TOKEN", "proxy-injected")  # the proxy replaces this placeholder
 SKIP = {"README.md", ".nojekyll", ".DS_Store"}
