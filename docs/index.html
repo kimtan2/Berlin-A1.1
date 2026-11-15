@@ -383,6 +383,16 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
   border-bottom: 3px double var(--ink); color: var(--ink); letter-spacing: .1em;
 }
 .reader:not(.orig) .rhead, .reader:not(.orig) .pnum { display: none; }
+.pdfc { display: none; position: absolute; inset: 0; z-index: 0; overflow: hidden; border-radius: inherit; background: #fff; }
+.pdfc canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.pdf-err { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 20px; text-align: center; font-family: var(--f-read); font-style: italic; color: var(--ink-2); }
+.reader.pdf .pdfc { display: block; }
+.reader.pdf .vp, .reader.pdf .rhead, .reader.pdf .pnum, .reader.pdf #rView { display: none; }
+.reader.pdf .leaf { --leaf-bg: #fff; --bind-l: rgba(0,0,0,0); --bind-r: rgba(0,0,0,0); border-radius: 2px; }
+.shelf-empty { margin: 14px 6px 0; font-family: var(--f-read); font-style: italic; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); text-align: center; }
+.file-chip { position: relative; overflow: hidden; display: inline-flex; align-items: center; }
+.file-chip input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+textarea:disabled { opacity: .55; }
 .flow p { margin: 0; text-indent: 1.3em; }
 .flow h2 + p, .flow .sub + p, .flow .verse + p, .flow p.first { text-indent: 0; }
 .flow h2 {
@@ -671,6 +681,14 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
   <div id="shelf"></div>
 
 
+  <div class="order skins">
+    <span class="order-label">Sicherung</span>
+    <div class="chips">
+      <button class="chip" type="button" id="bkExport">Backup exportieren</button>
+      <span class="chip file-chip">Backup laden<input type="file" id="bkImport" accept="application/json,.json" aria-label="Backup laden"></span>
+    </div>
+  </div>
+
   <p class="status" id="status">Bestand wird geladen …</p>
 </main>
 
@@ -692,6 +710,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
   <div class="stage" id="stage">
     <div class="zoomer" id="zoomer">
       <div class="leaf" id="leaf">
+        <div class="pdfc" id="pdfHost"></div>
         <div class="rhead" id="rhead" hidden></div>
         <div class="vp" id="vp"><div class="flow" id="flow" lang="de"></div><div class="marks" id="marks" aria-hidden="true"></div></div>
         <div class="freelayer" id="freeLayer" aria-hidden="true"></div>
@@ -772,7 +791,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
   <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="aTitle">
     <div class="grab"></div>
     <div class="sheet-h">
-      <div><h2 id="aTitle">Ins Regal stellen</h2><p>Text einfügen oder eine .txt-Datei wählen</p></div>
+      <div><h2 id="aTitle">Ins Regal stellen</h2><p>PDF oder Textdatei wählen, oder Text einfügen</p></div>
       <button class="icon-btn x" id="aClose" type="button" aria-label="Schließen"><svg><use href="#i-x"/></svg></button>
     </div>
     <div class="sheet-body">
@@ -788,8 +807,8 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
       </div>
       <div class="field"><label for="aText">Text</label><textarea id="aText" placeholder="Text hier einfügen. Leere Zeilen trennen Absätze." style="min-height:130px"></textarea></div>
       <div class="file-row">
-        <span class="ghost file-btn">Textdatei wählen<input type="file" id="aFile" accept=".txt,.md,text/plain" aria-label="Textdatei wählen"></span>
-        <span id="aFileInfo">PDF und EPUB kommen mit der iPhone-App.</span>
+        <span class="ghost file-btn">Datei wählen<input type="file" id="aFile" accept=".pdf,application/pdf,.txt,.md,text/plain" aria-label="PDF oder Textdatei wählen"></span>
+        <span id="aFileInfo">PDF oder .txt, zum Beispiel aus Google Drive</span>
       </div>
       <p class="err" id="aErr" hidden></p>
       <div class="btns"><button class="ghost" id="aCancel" type="button">Abbrechen</button><button class="primary" id="aSave" type="button">Ins Regal stellen</button></div>
@@ -804,7 +823,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
 'use strict';
 
 /* ---------------- data ---------------- */
-const BUILTIN = [{"id":"verwandlung","kind":"buch","title":"Die Verwandlung","author":"Franz Kafka","sort":"Kafka","year":"1915","chars":120835,"genre":"Erzählung","src":"Project Gutenberg","c":"#a3201a","code":"KAF"},{"id":"werther","kind":"buch","title":"Die Leiden des jungen Werther","author":"Johann Wolfgang von Goethe","sort":"Goethe","year":"1774","chars":238325,"genre":"Briefroman","src":"Project Gutenberg","c":"#26201d","code":"GOE"},{"id":"effi-briest","kind":"buch","title":"Effi Briest","author":"Theodor Fontane","sort":"Fontane","year":"1895","chars":586003,"genre":"Roman","src":"Project Gutenberg","c":"#7a1712","code":"FON"},{"id":"taugenichts","kind":"buch","title":"Aus dem Leben eines Taugenichts","author":"Joseph von Eichendorff","sort":"Eichendorff","year":"1826","chars":187792,"genre":"Novelle","src":"Project Gutenberg","c":"#b5521c","code":"EIC"},{"id":"immensee","kind":"buch","title":"Immensee","author":"Theodor Storm","sort":"Storm Immensee","year":"1849","chars":59857,"genre":"Novelle","src":"Project Gutenberg","c":"#5b1230","code":"STO"},{"id":"schimmelreiter","kind":"buch","title":"Der Schimmelreiter","author":"Theodor Storm","sort":"Storm Schimmelreiter","year":"1888","chars":232199,"genre":"Novelle","src":"Project Gutenberg","c":"#2f4640","code":"STO"},{"id":"illustrirte-zeitung-1843-1","kind":"zeitung","title":"Illustrirte Zeitung","issue":"Nr. 1","author":"J. J. Weber, Leipzig","sort":"1843-07-01","year":"1. Juli 1843","chars":30525,"genre":"Wochenzeitung","src":"Wikisource","ledes":[["Was wir wollen","Was wir wollen, ist in der That beinahe leichter in Ausführung zu bringen, als in klarer und anschaulicher Weise mit Worten darzulegen, und dies …"],["Der Komet","Der Sternenhimmel zeigt uns unzählbare Sonnensysteme und nur von einem derselben bildet unsere Sonne den Mittelpunkt. Zu unserm Sonnensystem gehören …"],["Longchamp","Wem wäre nicht, dem Namen nach wenigstens, Longchamp bekannt – dieser Sammelpunkt der vornehmen Welt in Paris, wo es zum guten Tone gehört, sich am …"]]},{"id":"gartenlaube-1880-2","kind":"zeitschrift","title":"Die Gartenlaube","issue":"Heft 2","author":"Ernst Keil, Leipzig","sort":"1880-01-10","year":"1880","chars":30054,"genre":"Illustrirtes Familienblatt","src":"Wikisource","ledes":[["Wie ich den Schimmel von Bronnzell kennen lernte","Zwei und ein halbes Jahr trug ich die Epauletten, ohne den Dienst in einer Friedensgarnison aus Erfahrung zu kennen. Die meisten Regimenter, welche …"],["Ein Aufschneider in Livrée","Mit dem frischen Blick des Humoristen sucht er seine Vorwürfe am liebsten in den unteren Volkskreisen, die der Necklust seines Pinsels den reichsten …"],["Noch einmal die Kochapparate","Der im Anschluß an meine Besprechung verbesserter Kochapparate (Nr. 23 der „Gartenlaube“ von 1879) lebhaft empfohlene Wasserkochtopf von Becker in …"]]}];
+const BUILTIN = [];
 const PRESS = { zeitschrift: 1, zeitung: 1 };
 const SPINE_COLORS = ['#a3201a', '#26201d', '#7a1712', '#b5521c', '#5b1230', '#2f4640', '#8a2b16', '#3d2a22'];
 
@@ -984,6 +1003,7 @@ function renderBooks(list) {
   kase.innerHTML = rows.map((r) => `<div class="row">${r.map((x) => x.slot
     ? `<button class="slot" type="button" style="--i:${n++}" data-add="buch" aria-label="Buch hinzufügen" title="Buch hinzufügen"><svg><use href="#i-plus"/></svg></button>`
     : spineHTML(x.it, n++)).join('')}</div><div class="board"></div>`).join('');
+  if (!list.length) host.insertAdjacentHTML('beforeend', '<p class="shelf-empty">Noch keine Bücher. Tippe auf +, um ein PDF oder einen Text ins Regal zu stellen.</p>');
 }
 
 function magHTML(it) {
@@ -1031,7 +1051,9 @@ function renderResume() {
   Object.values(S.pos).forEach((p) => { if (findItem(p.id) && (!best || p.at > best.at)) best = p; });
   if (!best) {
     host.className = '';
-    host.innerHTML = `<p class="resume-empty">Wähle ein Werk aus dem Regal. Beim nächsten Öffnen liegt es hier, aufgeschlagen auf der Seite, auf der du aufgehört hast.</p>`;
+    host.innerHTML = allItems().length
+      ? `<p class="resume-empty">Wähle ein Werk aus dem Regal. Beim nächsten Öffnen liegt es hier, aufgeschlagen auf der Seite, auf der du aufgehört hast.</p>`
+      : `<p class="resume-empty">Dein Regal ist noch leer. Tippe oben auf +, um ein Buch hinzuzufügen: ein PDF aus Dateien oder Google Drive, oder einen Text.</p>`;
     return;
   }
   const it = findItem(best.id);
@@ -1071,7 +1093,7 @@ function renderStatus() {
   const el = $('#status');
   if (!S.loaded) { el.innerHTML = S.offline ? 'Deine Lesestände sind gerade nicht erreichbar. Das Regal funktioniert trotzdem.' : 'Lesestände werden geladen …'; return; }
   const where = { db: 'in deinem Claude-Konto', local: 'auf diesem Gerät', memory: 'nur bis zum Schließen dieser Seite' }[Store.mode];
-  el.innerHTML = `Lesestände, Notizen und Markierungen werden <b>${where}</b> gespeichert, auch ohne Internet.<br>Texte: gemeinfreie Ausgaben von Project Gutenberg und Wikisource.`;
+  el.innerHTML = `Bücher, Lesestände, Notizen und Markierungen werden <b>${where}</b> gespeichert, auch ohne Internet. Mit „Backup exportieren“ sicherst du alles in einer Datei.`;
 }
 
 /* ---------------- reader ---------------- */
@@ -1138,6 +1160,8 @@ async function openItem(id) {
   const rd = $('#reader');
   rd.hidden = false;
   rd.classList.toggle('press', isPress(it));
+  rd.classList.toggle('pdf', !!it.pdf);
+  $('#pdfHost').innerHTML = '';
   rd.classList.remove('immersive');
   applyView();
   $('#rhead').hidden = true; $('#pnum').hidden = true;
@@ -1150,6 +1174,24 @@ async function openItem(id) {
   $('#rLoading').textContent = 'Seiten werden gelegt …';
   $('#seal').hidden = true;
   $('#pageno').textContent = '';
+  if (it.pdf) {
+    try {
+      $('#rLoading').textContent = 'PDF wird geöffnet …';
+      [R.notes, R.marks] = await Promise.all([loadNotes(it.id), loadMarks(it.id)]);
+      const doc = await openPdf(it);
+      if (R.it !== it) { doc.destroy(); return; }
+      R.pdfDoc = doc;
+    } catch (e) {
+      $('#rLoading').textContent = 'Das PDF ließ sich nicht öffnen. Lösche es aus dem Regal und füge es noch einmal hinzu.';
+      return;
+    }
+    const saved = S.pos[it.id];
+    layout(saved ? { b: saved.b || 0, k: saved.k || 0 } : { b: 0, k: 0 });
+    $('#rLoading').hidden = true;
+    updateCount();
+    if (!lsGet('glut.hint')) { lsSet('glut.hint', 1); toast('Mit zwei Fingern zoomen · Doppeltippen vergrößert · Tippen in der Mitte blendet die Leisten aus', 6000); }
+    return;
+  }
   let blocks;
   try {
     [blocks, R.notes, R.marks] = await Promise.all([getBlocks(it), loadNotes(it.id), loadMarks(it.id)]);
@@ -1189,6 +1231,10 @@ function closeReader() {
   closeSheet('#notesSheet');
   $('#reader').hidden = true;
   $('#reader').classList.remove('immersive');
+  if (R.pdfDoc) { try { R.pdfDoc.destroy(); } catch (e) {} R.pdfDoc = null; }
+  R.pdfTok = (R.pdfTok || 0) + 1;
+  $('#pdfHost').innerHTML = '';
+  $('#reader').classList.remove('pdf');
   $('#shelfView').hidden = false;
   document.body.classList.remove('reading');
   $('#flow').innerHTML = '';
@@ -1217,7 +1263,10 @@ function measureArea() {
 }
 function sizeLeaf() {
   measureArea();
-  if (S.view === 'orig') {
+  if (R.it && R.it.pdf) {
+    Z.LW = 420; Z.LH = Math.round(420 * (R.it.ph || 594) / (R.it.pw || 420));
+    Z.base = Math.min(Z.A.w / Z.LW, Z.A.h / Z.LH);
+  } else if (S.view === 'orig') {
     const g = isPress(R.it) ? PAGE.press : PAGE.buch;
     Z.LW = g.w; Z.LH = g.h; Z.base = Math.min(Z.A.w / Z.LW, Z.A.h / Z.LH);
   } else {
@@ -1238,6 +1287,7 @@ function applyZ(anim) {
   z.style.transition = anim ? 'transform .26s cubic-bezier(.2,.7,.2,1)' : 'none';
   z.style.transform = `translate(${Z.tx}px,${Z.ty}px) scale(${Z.s})`;
   $('#zPct').textContent = Math.round(Z.s * 100) + '%';
+  if (R.it && R.it.pdf && R.pdfDoc) schedulePdfSharpen();
 }
 function fitZ(anim) { Z.s = Z.base; clampZ(); applyZ(anim); }
 function zoomAt(cx, cy, s, anim) {
@@ -1251,6 +1301,7 @@ function stagePt(e) { const r = $('#stage').getBoundingClientRect(); return { x:
 function zoomCenter(f) { zoomAt(Z.A.x + Z.A.w / 2, Z.A.y + Z.A.h / 2, Z.s * f, true); }
 
 function layout(anchor) {
+  if (R.it && R.it.pdf) { if (R.pdfDoc) layoutPdf(anchor); return; }
   sizeLeaf();
   const vp = $('#vp'), flow = $('#flow'), zoomer = $('#zoomer');
   zoomer.style.transition = 'none'; zoomer.style.transform = 'none';
@@ -1363,6 +1414,7 @@ function go(p, animate) {
   const mk = $('#marks'); mk.style.transition = flow.style.transition; mk.style.transform = flow.style.transform;
   if (typeof closePop === 'function') { closePop(); renderFree(); }
   R.page = p;
+  if (R.it && R.it.pdf) renderPdfPage(p);
   const ch = chapterAt(p);
   $('#rChapter').textContent = ch || (isPress(R.it) ? (R.it.year || '') : (R.it.author || ''));
   $('#pageno').innerHTML = `Seite <b>${p + 1}</b> von ${R.pages}`;
@@ -1687,7 +1739,7 @@ const rectHTML = (r, col, id) => `<i class="mk"${id ? ` data-m="${id}"` : ''} st
 
 /* free strokes: points in page coordinates */
 function leafPt(e) { const r = $('#leaf').getBoundingClientRect(); return [(e.clientX - r.left) / Z.s, (e.clientY - r.top) / Z.s]; }
-function freeWidth() { return Math.round(parseFloat(getComputedStyle($('#flow')).fontSize) * 1.15); }
+function freeWidth() { return R.it && R.it.pdf ? Math.max(8, Math.round(Z.LW * 0.03)) : Math.round(parseFloat(getComputedStyle($('#flow')).fontSize) * 1.15); }
 function pathD(pts) {
   const f = (v) => v.toFixed(1);
   if (pts.length === 1) return `M${f(pts[0][0])} ${f(pts[0][1])}h.1`;
@@ -2064,6 +2116,8 @@ $('#rRemove').addEventListener('click', () => {
   clearTimeout(R.saveT);
   for (let i = 0; i < (it.chunks || 0); i++) Store.remove('chunk-' + it.id + '-' + i);
   Store.remove('notes-' + it.id);
+  Store.remove('marks-' + it.id);
+  if (it.pdf) IDB.del('pdf-' + it.id).catch(() => {});
   Store.dropPos(it.id);
   Store.dropItemMeta(it.id);
   S.custom = S.custom.filter((x) => x.id !== it.id);
@@ -2075,9 +2129,15 @@ $('#rRemove').addEventListener('click', () => {
 
 /* ---------------- add sheet ---------------- */
 const A = { kind: 'buch' };
+function resetAddFile() {
+  A.pdf = null;
+  $('#aText').disabled = false;
+  $('#aText').placeholder = 'Text hier einfügen. Leere Zeilen trennen Absätze.';
+}
 function openAdd(kind) {
   A.kind = kind || (S.tab === 'presse' ? 'zeitschrift' : 'buch');
   setAddKind(A.kind);
+  if (!$('#aFile').value) resetAddFile();
   $('#aErr').hidden = true;
   openSheet('#addSheet');
   $('#aT').focus();
@@ -2095,6 +2155,30 @@ $('#aCancel').addEventListener('click', () => closeSheet('#addSheet'));
 $('#addSheet').addEventListener('click', (e) => { if (e.target.id === 'addSheet') closeSheet('#addSheet'); });
 $('#aFile').addEventListener('change', async (e) => {
   const f = e.target.files && e.target.files[0]; if (!f) return;
+  $('#aErr').hidden = true; resetAddFile();
+  if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf') {
+    $('#aFileInfo').textContent = 'PDF wird gelesen …';
+    try {
+      const buf = await f.arrayBuffer();
+      const lib = await loadPdfjs();
+      const doc = await lib.getDocument({ data: new Uint8Array(buf.slice(0)) }).promise;
+      const v = (await doc.getPage(1)).getViewport({ scale: 1 });
+      let info = {};
+      try { info = (await doc.getMetadata()).info || {}; } catch (_) {}
+      A.pdf = { buf, pages: doc.numPages, pw: v.width, ph: v.height, size: f.size };
+      doc.destroy();
+      const metaTitle = info.Title && String(info.Title).trim().length > 3 ? String(info.Title).trim() : '';
+      if (!$('#aT').value.trim()) $('#aT').value = cleanTitle(metaTitle || f.name);
+      if (!$('#aA').value.trim() && info.Author) $('#aA').value = String(info.Author).trim();
+      $('#aText').value = ''; $('#aText').disabled = true;
+      $('#aText').placeholder = 'Nicht nötig: Das PDF wird mit seinen Originalseiten gespeichert.';
+      $('#aFileInfo').textContent = `${f.name} · ${A.pdf.pages} Seiten · ${f.size < 1048576 ? Math.max(1, Math.round(f.size / 1024)) + ' KB' : (f.size / 1048576).toFixed(1).replace('.', ',') + ' MB'}`;
+    } catch (err) {
+      resetAddFile(); $('#aFileInfo').textContent = '';
+      showErr('#aErr', 'Dieses PDF ließ sich nicht öffnen. Ist es mit einem Passwort geschützt oder beschädigt?');
+    }
+    return;
+  }
   try {
     const t = await f.text();
     $('#aText').value = t;
@@ -2111,10 +2195,31 @@ function textToBlocks(t) {
     .map((p) => (p.length < 70 && /^((erstes|zweites|drittes|viertes|fünftes|\d+\.?)\s+)?(kapitel|teil|buch|chapter)\b|^kapitel\s|^[IVXLC]+\.?$|^\d{1,3}\.?$/i.test(p)) ? ['h', p] : ['p', p]);
 }
 
-$('#aSave').addEventListener('click', () => {
+$('#aSave').addEventListener('click', async () => {
   const title = $('#aT').value.trim();
   const text = $('#aText').value;
   if (!title) return showErr('#aErr', 'Gib einen Titel ein.');
+  if (A.pdf) {
+    const id = 'u' + Date.now().toString(36);
+    const author = $('#aA').value.trim(), year = $('#aY').value.trim();
+    const btn = $('#aSave'); btn.disabled = true;
+    try { await IDB.put('pdf-' + id, A.pdf.buf); }
+    catch (e) { btn.disabled = false; return showErr('#aErr', 'Auf dem Gerät ist nicht genug Speicher für dieses PDF frei.'); }
+    const meta = { rec: 'item', id, custom: true, pdf: true, kind: A.kind, title, author, year, sort: A.kind === 'buch' ? (author.split(/\s+/).pop() || title) : title,
+      pages: A.pdf.pages, pw: A.pdf.pw, ph: A.pdf.ph, size: A.pdf.size, chars: A.pdf.pages * 1800, created: Date.now() };
+    if (A.kind !== 'buch') { meta.genre = A.kind === 'zeitung' ? 'Zeitung' : 'Zeitschrift'; meta.issue = year; meta.year = ''; meta.ledes = [[title, `${A.pdf.pages} Seiten im Original`]]; }
+    try { Store.saveItemMeta(meta); }
+    catch (e) { btn.disabled = false; IDB.del('pdf-' + id).catch(() => {}); return showErr('#aErr', 'Auf dem Gerät ist nicht genug Speicher frei.'); }
+    btn.disabled = false;
+    S.custom = S.custom.concat([meta]);
+    S.tab = A.kind === 'buch' ? 'buch' : 'presse'; saveUI();
+    $('#aT').value = ''; $('#aA').value = ''; $('#aY').value = ''; $('#aFile').value = ''; resetAddFile();
+    $('#aFileInfo').textContent = 'PDF oder .txt, zum Beispiel aus Google Drive';
+    closeSheet('#addSheet');
+    renderShelf();
+    toast(`„${title}“ steht jetzt im Regal.`);
+    return;
+  }
   if (text.trim().length < 20) return showErr('#aErr', 'Füge einen Text ein oder wähle eine Textdatei.');
   if (text.length > 3000000) return showErr('#aErr', 'Der Text ist zu lang für diese Vorschau (höchstens etwa 3 Mio. Zeichen).');
   const blocks = textToBlocks(text);
@@ -2142,11 +2247,157 @@ $('#aSave').addEventListener('click', () => {
   S.custom = S.custom.concat([meta]);
   S.tab = A.kind === 'buch' ? 'buch' : 'presse'; saveUI();
   $('#aT').value = ''; $('#aA').value = ''; $('#aY').value = ''; $('#aText').value = ''; $('#aFile').value = '';
-  $('#aFileInfo').textContent = 'PDF und EPUB kommen mit der iPhone-App.';
+  $('#aFileInfo').textContent = 'PDF oder .txt, zum Beispiel aus Google Drive';
   closeSheet('#addSheet');
   renderShelf();
   toast(`„${title}“ steht jetzt im Regal.`);
 });
+
+/* ---------------- PDF: stored on the device (IndexedDB), drawn page by page with pdf.js ---------------- */
+const IDB = {
+  open() {
+    if (!this.p) this.p = new Promise((res, rej) => {
+      const r = indexedDB.open('glut', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('files');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => { this.p = null; rej(r.error); };
+    });
+    return this.p;
+  },
+  async run(mode, fn) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('files', mode), st = t.objectStore('files'), req = fn(st);
+      t.oncomplete = () => res(req && req.result);
+      t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  },
+  put(k, v) { return this.run('readwrite', (s) => s.put(v, k)); },
+  get(k) { return this.run('readonly', (s) => s.get(k)); },
+  del(k) { return this.run('readwrite', (s) => s.delete(k)); },
+};
+let pdfjsP = null;
+function loadPdfjs() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if (!pdfjsP) pdfjsP = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'vendor/pdfjs/pdf.min.js';
+    s.onload = () => {
+      const lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+      if (!lib) { pdfjsP = null; return rej(new Error('pdfjs')); }
+      lib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+      res(lib);
+    };
+    s.onerror = () => { pdfjsP = null; rej(new Error('pdfjs')); };
+    document.head.appendChild(s);
+  });
+  return pdfjsP;
+}
+async function openPdf(it) {
+  const [lib, buf] = await Promise.all([loadPdfjs(), IDB.get('pdf-' + it.id)]);
+  if (!buf) throw new Error('missing');
+  return lib.getDocument({ data: new Uint8Array(buf) }).promise;
+}
+function layoutPdf(anchor) {
+  sizeLeaf();
+  const n = R.pdfDoc.numPages;
+  R.n = n; R.pages = n; R.cols = 1; R.colStep = 0; R.step = 0;
+  R.start = Int32Array.from({ length: n }, (_, i) => i);
+  R.heads = []; R.openPages = new Set();
+  R.layoutKey = 'pdf'; R.W = Z.LW; R.H = Z.LH; R.pdfQ = 0;
+  $('#scrub').max = n;
+  Z.s = Z.base; clampZ(); applyZ(false);
+  go(pageFor(anchor), false);
+  renderMarks();
+}
+const pdfQuality = () => Math.min(4, Math.max(1, Z.s) * (window.devicePixelRatio || 1));
+async function renderPdfPage(p) {
+  const doc = R.pdfDoc; if (!doc) return;
+  const tok = (R.pdfTok = (R.pdfTok || 0) + 1);
+  if (R.pdfTask) { try { R.pdfTask.cancel(); } catch (_) {} }
+  try {
+    const page = await doc.getPage(p + 1);
+    if (tok !== R.pdfTok || doc !== R.pdfDoc) return;
+    const q = pdfQuality(), v1 = page.getViewport({ scale: 1 });
+    let scale = (Z.LW / v1.width) * q, vp = page.getViewport({ scale });
+    const MAXPX = 12e6;  // stay under the iPhone canvas limit
+    if (vp.width * vp.height > MAXPX) { scale *= Math.sqrt(MAXPX / (vp.width * vp.height)); vp = page.getViewport({ scale }); }
+    const c = document.createElement('canvas');
+    c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+    const ctx = c.getContext('2d', { alpha: false });
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    R.pdfTask = page.render({ canvasContext: ctx, viewport: vp });
+    await R.pdfTask.promise;
+    if (tok !== R.pdfTok) return;
+    const host = $('#pdfHost'); host.innerHTML = ''; host.appendChild(c);
+    R.pdfQ = q;
+  } catch (e) {
+    if (e && e.name === 'RenderingCancelledException') return;
+    if (tok === R.pdfTok) $('#pdfHost').innerHTML = '<p class="pdf-err">Diese Seite ließ sich nicht darstellen.</p>';
+  }
+}
+let sharpenT = 0;
+function schedulePdfSharpen() {
+  clearTimeout(sharpenT);
+  sharpenT = setTimeout(() => { if (R.open && R.pdfDoc && pdfQuality() > (R.pdfQ || 0) * 1.25) renderPdfPage(R.page); }, 280);
+}
+function cleanTitle(s) {
+  s = String(s).replace(/\.[a-z0-9]{2,4}$/i, '').replace(/^[a-z0-9-]+\.(pub|org|com|net)_/i, '');
+  s = s.replace(/[-_ ]\d{9,}.*$/, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (s === s.toLowerCase()) {
+    const small = new Set(['a', 'an', 'the', 'of', 'to', 'and', 'in', 'on', 'for', 'at', 'by', 'der', 'die', 'das', 'und', 'von']);
+    s = s.split(' ').map((w, i) => (i && small.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+  }
+  return s;
+}
+
+/* ---------------- backup: everything on this device in one file ---------------- */
+function b64FromBuf(buf) { const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+function bufFromB64(b) { const s = atob(b), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; }
+async function exportBackup() {
+  const btn = $('#bkExport'), label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Wird erstellt …';
+  try {
+    const data = { app: 'glutbibliothek', v: 1, at: new Date().toISOString(), ui: lsGet('glut.ui') || {}, pos: lsGet('glut.pos') || {}, items: lsGet('glut.items') || [], docs: {}, files: {} };
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('glut.doc.') === 0) data.docs[k.slice(9)] = lsGet(k); }
+    for (const it of data.items) if (it.pdf) { const buf = await IDB.get('pdf-' + it.id); if (buf) data.files['pdf-' + it.id] = b64FromBuf(buf); }
+    const d = new Date(), stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const name = `glutbibliothek-backup-${stamp}.json`;
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    let done = false;
+    try {
+      const file = new File([blob], name, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Glutbibliothek-Backup' }); done = true; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    if (!done) {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 8000);
+    }
+    const n = data.items.length;
+    toast(`Backup erstellt: ${n} ${n === 1 ? 'Werk' : 'Werke'} mit Notizen, Markierungen und Lesestand`);
+  } catch (e) { toast('Das Backup ließ sich nicht erstellen. Ist genug Speicher frei?'); }
+  finally { btn.disabled = false; btn.textContent = label; }
+}
+async function importBackup(f) {
+  try {
+    const data = JSON.parse(await f.text());
+    if (!data || data.app !== 'glutbibliothek') throw new Error('foreign');
+    for (const [k, b] of Object.entries(data.files || {})) await IDB.put(k, bufFromB64(b));
+    const incoming = data.items || [];
+    const items = (lsGet('glut.items') || []).filter((x) => !incoming.some((y) => y.id === x.id)).concat(incoming);
+    if (!lsSet('glut.items', items)) throw new Error('full');
+    lsSet('glut.pos', Object.assign({}, lsGet('glut.pos') || {}, data.pos || {}));
+    for (const [k, v] of Object.entries(data.docs || {})) lsSet('glut.doc.' + k, v);
+    [notesCache, marksCache, blocksCache].forEach((c) => Object.keys(c).forEach((k) => delete c[k]));
+    S.custom = items; S.pos = Object.assign({}, S.pos, data.pos || {});
+    renderShelf();
+    toast(`Backup geladen: ${incoming.length} ${incoming.length === 1 ? 'Werk' : 'Werke'}`);
+  } catch (err) {
+    toast(err && err.message === 'foreign' ? 'Diese Datei ist keine Glutbibliothek-Sicherung.' : err && err.message === 'full' ? 'Auf dem Gerät ist nicht genug Speicher frei.' : 'Das Backup ließ sich nicht laden.');
+  }
+}
+$('#bkExport').addEventListener('click', exportBackup);
+$('#bkImport').addEventListener('change', (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) importBackup(f); });
 
 /* ---------------- toast ---------------- */
 let toastT = 0;
@@ -2203,6 +2454,8 @@ function warmFonts() {
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
   navigator.serviceWorker.ready.then(() => { setTimeout(warmFonts, 2500); setTimeout(warmFonts, 12000); });
+  const hadController = !!navigator.serviceWorker.controller; let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded && !R.open) { reloaded = true; location.reload(); } });
 }
 })();
 </script>

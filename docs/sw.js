@@ -1,5 +1,5 @@
 // Glutbibliothek service worker: everything is cached on first visit, so the app opens and reads offline.
-const VERSION = 'glut-v1';
+const VERSION = 'glut-v2';
 const CORE = [
   "./",
   "index.html",
@@ -7,14 +7,8 @@ const CORE = [
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/apple-touch-icon.png",
-  "texts/effi-briest.json",
-  "texts/gartenlaube-1880-2.json",
-  "texts/illustrirte-zeitung-1843-1.json",
-  "texts/immensee.json",
-  "texts/schimmelreiter.json",
-  "texts/taugenichts.json",
-  "texts/verwandlung.json",
-  "texts/werther.json"
+  "vendor/pdfjs/pdf.min.js",
+  "vendor/pdfjs/pdf.worker.min.js"
 ];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 
