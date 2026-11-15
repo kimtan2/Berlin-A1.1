@@ -634,7 +634,26 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
   animation: toolin .26s cubic-bezier(.2, .8, .2, 1);
 }
 @keyframes toolin { from { transform: translate(-50%, 16px); opacity: 0 } }
-.reader.immersive .marktools { bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); }
+.mt-ck { display: none; width: 18px; height: 18px; }
+.marktools { transition: opacity .18s ease; }
+.marktools.drawing { opacity: .12; }
+/* normal view: the tools take the place of the bottom bar, so they never cover the page */
+.reader.marking .r-bot > .scrub-row, .reader.marking .r-bot > .r-row { display: none; }
+.reader.marking .r-bot { justify-content: center; }
+.r-bot > .marktools { position: static; transform: none; align-self: center; box-shadow: 0 6px 18px -12px rgba(60, 25, 8, .45); animation: fade .2s ease; }
+/* full screen: a slim rail on the right edge */
+.stage > .marktools.rail {
+  left: auto; right: max(8px, env(safe-area-inset-right, 0px)); top: 50%; bottom: auto; transform: translateY(-50%);
+  flex-direction: column; gap: 7px; padding: 9px 6px; border-radius: 26px; animation: fade .2s ease;
+  background: rgba(255, 253, 249, .86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.marktools.rail .mt-colors { flex-direction: column; gap: 8px; }
+.marktools.rail .mt-c { width: 24px; height: 24px; }
+.marktools.rail .mt-sep { width: 20px; height: 1px; margin: 1px 0; }
+.marktools.rail .mt-b { width: 32px; height: 32px; }
+.marktools.rail .mt-done { width: 32px; height: 32px; padding: 0; margin: 2px 0 0; display: grid; place-items: center; border-radius: 50%; }
+.marktools.rail .mt-done span { display: none; }
+.marktools.rail .mt-ck { display: block; }
 .mt-colors { display: flex; gap: 7px; }
 .mt-c { width: 26px; height: 26px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: var(--mc); box-shadow: inset 0 0 0 1px rgba(60, 30, 10, .16); transition: transform .15s ease, box-shadow .15s ease; }
 .mt-c[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--ink); transform: scale(1.06); }
@@ -688,6 +707,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
     <symbol id="i-free" viewBox="0 0 24 24"><path d="M3.5 15.5c2.5-6 4.8-6.4 6-3.2s2.2 5.4 4.8 1.6 4.2-6.3 6.2-3.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
     <symbol id="i-erase" viewBox="0 0 24 24"><path d="M9 20h11M4.8 15.3l9.9-9.9a2 2 0 0 1 2.8 0l2.1 2.1a2 2 0 0 1 0 2.8L12 18.9a2 2 0 0 1-1.4.6H8.3a2 2 0 0 1-1.4-.6l-2.1-2.1a2 2 0 0 1 0-2.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.5 10.5l5 5" stroke="currentColor" stroke-width="1.7"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-page" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v5h5M9 12h7M9 15h7M9 18h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
@@ -775,7 +795,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
       <span class="mt-sep"></span>
       <button class="mt-b" id="mtFree" type="button" aria-pressed="false" aria-label="Freihand" title="Freihand"><svg><use href="#i-free"/></svg></button>
       <button class="mt-b" id="mtErase" type="button" aria-pressed="false" aria-label="Radierer" title="Radierer"><svg><use href="#i-erase"/></svg></button>
-      <button class="mt-done" id="mtDone" type="button">Fertig</button>
+      <button class="mt-done" id="mtDone" type="button" aria-label="Fertig"><svg class="mt-ck"><use href="#i-check"/></svg><span>Fertig</span></button>
     </div>
     <div class="mpop" id="mpop" hidden role="dialog" aria-label="Markierung">
       <div class="mt-colors" id="mpColors"></div>
@@ -1492,6 +1512,7 @@ function toggleChrome() {
   rd.classList.toggle('immersive');
   const on = rd.classList.contains('immersive');
   $('#rFull').setAttribute('aria-label', on ? 'Vollbild beenden' : 'Vollbild');
+  placeTools();
   if (on) {
     wakeDock();
     if (!lsGet('glut.fshint')) { lsSet('glut.fshint', 1); toast('Vollbild: Unten rechts bleiben Markieren und Notiz. Tippe in die Mitte oder auf ⤡ zum Beenden.', 5500); }
@@ -1536,8 +1557,8 @@ function go(p, animate) {
   flow.style.transition = animate ? SLIDE : 'none';
   flow.style.transform = `translate3d(${-p * R.step}px,0,0)`;
   const mk = $('#marks'); mk.style.transition = flow.style.transition; mk.style.transform = flow.style.transform;
-  if (typeof closePop === 'function') { closePop(); renderFree(); }
   R.page = p;
+  if (typeof closePop === 'function') { closePop(); renderFree(); }
   if (R.it && R.it.pdf) pdfGoto(p, animate, p - prev);
   const ch = chapterAt(p);
   $('#rChapter').textContent = ch || (isPress(R.it) ? (R.it.year || '') : (R.it.author || ''));
@@ -1595,7 +1616,7 @@ function updateCount() {
     P.set(e.pointerId, pt);
     if (M.on && e.pointerType === 'mouse') e.preventDefault();
     if (P.size === 2) {
-      if (G && G.type === 'mark') { clearDraft(); if (G.erase && G.hits.size) { persistMarks(); renderMarks(); } }
+      if (G && G.type === 'mark') { $('#markTools').classList.remove('drawing'); clearDraft(); if (G.erase && G.hits.size) { persistMarks(); renderMarks(); } }
       if (G && G.drag) go(R.page, false);
       if (G && G.pan) { edgeShow(0); applyZ(false); }
       const m = mid();
@@ -1603,6 +1624,7 @@ function updateCount() {
     } else if (P.size === 1) {
       if (!$('#mpop').hidden) closePop();
       G = M.on ? startMark(e, pt) : one(pt, Date.now());
+      if (G && G.type === 'mark' && !G.erase) $('#markTools').classList.add('drawing');
     }
   });
   stage.addEventListener('pointermove', (e) => {
@@ -1650,6 +1672,7 @@ function updateCount() {
     }
     if (G.type === 'mark') {
       const g = G; G = null;
+      $('#markTools').classList.remove('drawing');
       if (e.type === 'pointercancel') { clearDraft(); return; }
       if (endMark(g, pt, e.clientX, e.clientY) === 'tap' && Date.now() - g.t0 < 350) markTap(pt, e);
       return;
@@ -1789,8 +1812,19 @@ function updateTools() {
   $('#mtErase').setAttribute('aria-pressed', M.erase);
   $('#reader').classList.toggle('erasing', M.erase);
 }
+function placeTools() {
+  const t = $('#markTools'), imm = $('#reader').classList.contains('immersive');
+  t.classList.toggle('rail', imm);
+  const host = imm ? $('#stage') : $('.r-bot');
+  if (t.parentNode !== host) { if (imm) host.appendChild(t); else host.insertBefore(t, host.firstChild); }
+}
 function setMarkMode(on) {
+  const rb = $('.r-bot');
+  if (on && !M.on) { rb.style.boxSizing = 'border-box'; rb.style.height = rb.offsetHeight + 'px'; }  // the page area keeps its exact size
+  if (!on) { rb.style.height = ''; rb.style.boxSizing = ''; }
   M.on = on;
+  placeTools();
+  $('#markTools').classList.remove('drawing');
   $('#reader').classList.toggle('marking', on);
   $('#rMark').setAttribute('aria-pressed', on);
   $('#markTools').hidden = !on;
