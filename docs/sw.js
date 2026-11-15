@@ -1,5 +1,5 @@
 // Glutbibliothek service worker: everything is cached on first visit, so the app opens and reads offline.
-const VERSION = 'glut-v2';
+const VERSION = 'glut-v3';
 const CORE = [
   "./",
   "index.html",
@@ -31,6 +31,7 @@ self.addEventListener('fetch', (e) => {
     return;
   }
   if (url.origin !== location.origin) return;
+  if (url.pathname.endsWith('.pdf') || url.pathname.endsWith('library.json')) return;
   // app files: answer from the cache at once, refresh it in the background (new versions show on the next start)
   const key = req.mode === 'navigate' ? 'index.html' : req;
   e.respondWith(caches.open(VERSION).then((c) => c.match(key).then((hit) => {

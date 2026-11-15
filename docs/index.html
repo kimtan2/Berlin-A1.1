@@ -2118,6 +2118,7 @@ $('#rRemove').addEventListener('click', () => {
   Store.remove('notes-' + it.id);
   Store.remove('marks-' + it.id);
   if (it.pdf) IDB.del('pdf-' + it.id).catch(() => {});
+  if (it.lib) { const sk = lsGet('glut.libskip') || []; if (!sk.includes(it.id)) { sk.push(it.id); lsSet('glut.libskip', sk); } }
   Store.dropPos(it.id);
   Store.dropItemMeta(it.id);
   S.custom = S.custom.filter((x) => x.id !== it.id);
@@ -2399,6 +2400,29 @@ async function importBackup(f) {
 $('#bkExport').addEventListener('click', exportBackup);
 $('#bkImport').addEventListener('change', (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) importBackup(f); });
 
+/* ---------------- personal library: books that come with this copy of the app ---------------- */
+async function loadLibrary() {
+  let lib;
+  try { const r = await fetch('library.json', { cache: 'no-cache' }); if (!r.ok) return; lib = await r.json(); } catch (e) { return; }
+  const skip = lsGet('glut.libskip') || [];
+  for (const b of (lib.books || [])) {
+    if (S.custom.some((x) => x.id === b.id) || skip.includes(b.id)) continue;
+    try {
+      toast(`„${b.title}“ wird in dein Regal gestellt …`, 15000);
+      const r = await fetch(b.file, { cache: 'no-cache' });
+      if (!r.ok) throw new Error('fetch');
+      const buf = await r.arrayBuffer();
+      await IDB.put('pdf-' + b.id, buf);
+      const meta = { rec: 'item', id: b.id, custom: true, pdf: true, lib: true, kind: b.kind || 'buch', title: b.title, author: b.author || '', year: b.year || '',
+        sort: b.sort || (b.author || b.title).split(/\s+/).pop(), pages: b.pages, pw: b.pw, ph: b.ph, size: buf.byteLength, chars: (b.pages || 200) * 1800, c: b.c, created: Date.now() };
+      Store.saveItemMeta(meta);
+      S.custom = S.custom.filter((x) => x.id !== b.id).concat([meta]);
+      if (!R.open) renderShelf();
+      toast(`„${b.title}“ steht jetzt in deinem Regal.`);
+    } catch (e) { toast('Dein Buch ließ sich gerade nicht laden. Beim nächsten Öffnen mit Internet versuche ich es erneut.'); }
+  }
+}
+
 /* ---------------- toast ---------------- */
 let toastT = 0;
 function toast(msg, ms) {
@@ -2437,6 +2461,7 @@ async function boot(hot) {
   }
   if (!R.open) renderShelf(); else renderStatus();
   if (hot && hot.open && !R.open) openItem(hot.open);
+  loadLibrary();
 }
 
 const hot = window.claude && window.claude.hot;
