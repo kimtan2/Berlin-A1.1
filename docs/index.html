@@ -478,6 +478,23 @@ textarea:disabled { opacity: .55; }
 }
 .dock button:hover, .dock button:active { background: var(--red-wash); color: var(--red); }
 .dock button svg { width: 17px; height: 17px; }
+.edgepull {
+  position: absolute; z-index: 7; top: 50%; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 11px 8px 9px; border-radius: 22px; background: rgba(42, 26, 19, .9); color: #fff7ea;
+  font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; box-shadow: 0 10px 24px -10px rgba(40, 15, 5, .7);
+  opacity: 0; pointer-events: none; transform: translate(var(--ex, 0), -50%) scale(.88);
+  transition: opacity .15s ease, transform .22s cubic-bezier(.2, .8, .2, 1), background .15s ease;
+}
+.edgepull.right { right: max(10px, env(safe-area-inset-right, 0px)); --ex: 16px; }
+.edgepull.left { left: max(10px, env(safe-area-inset-left, 0px)); --ex: -16px; }
+.edgepull.show { opacity: 1; transform: translate(0, -50%) scale(1); }
+.edgepull.ready { background: var(--red); transform: translate(0, -50%) scale(1.08); }
+.ep-ring { width: 24px; height: 24px; }
+.ep-ring circle { fill: none; stroke-width: 2.5; }
+.ep-ring .bg { stroke: rgba(255, 247, 234, .25); }
+.ep-ring .fg { stroke: var(--gold); stroke-linecap: round; stroke-dasharray: 56.55; stroke-dashoffset: 56.55; transform: rotate(-90deg); transform-origin: 12px 12px; }
+.edgepull.ready .ep-ring .fg { stroke: #fff7ea; }
+.ep-arrow { font-size: 15px; line-height: 1; }
 .dock-sep { width: 1px; height: 18px; background: rgba(110, 72, 36, .2); margin: 0 2px; }
 
 .r-bot { padding-top: 8px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); }
@@ -773,6 +790,10 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
       <button id="zIn" type="button" aria-label="Vergrößern">+</button>
     </div>
     <div class="mini-pno" id="miniPno"></div>
+    <div class="edgepull" id="edgePull" aria-hidden="true">
+      <svg class="ep-ring" viewBox="0 0 24 24"><circle class="bg" cx="12" cy="12" r="9"/><circle class="fg" cx="12" cy="12" r="9"/></svg>
+      <span class="ep-num"></span><span class="ep-arrow">›</span>
+    </div>
     <div class="dock" id="dock" role="toolbar" aria-label="Werkzeuge im Vollbild">
       <button type="button" id="dMark" aria-label="Markieren" title="Markieren"><svg><use href="#i-mark"/></svg></button>
       <button type="button" id="dNote" aria-label="Notiz zu dieser Seite" title="Notiz"><svg><use href="#i-pen"/></svg></button>
@@ -1327,10 +1348,10 @@ function clampZ() {
   Z.tx = w <= A.w ? A.x + (A.w - w) / 2 : Math.min(A.x, Math.max(A.x + A.w - w, Z.tx));
   Z.ty = h <= A.h ? A.y + (A.h - h) / 2 : Math.min(A.y, Math.max(A.y + A.h - h, Z.ty));
 }
-function applyZ(anim) {
+function applyZ(anim, extraX) {
   const z = $('#zoomer');
   z.style.transition = anim ? 'transform .26s cubic-bezier(.2,.7,.2,1)' : 'none';
-  z.style.transform = `translate(${Z.tx}px,${Z.ty}px) scale(${Z.s})`;
+  z.style.transform = `translate(${Z.tx + (extraX || 0)}px,${Z.ty}px) scale(${Z.s})`;
   $('#zPct').textContent = Math.round(Z.s * 100) + '%';
   if (R.it && R.it.pdf && R.pdfDoc) schedulePdfSharpen();
 }
@@ -1413,9 +1434,46 @@ function turn(d) {
   if (!R.start) return;
   const np = Math.max(0, Math.min(R.pages - 1, R.page + d));
   if (np === R.page) return;
-  const wasZoomed = zoomed();
-  go(np, !wasZoomed);
-  if (wasZoomed) { Z.tx = Z.A.x; Z.ty = Z.A.y; clampZ(); applyZ(false); }
+  if (zoomed()) return edgeTurn(np - R.page);
+  go(np, true);
+}
+
+/* zoomed in: pull past the page edge to turn. A ring fills while you pull; on release the page
+   glides out and the next one glides in at the same zoom, at its reading start. */
+const EDGE_PULL = 110, RING = 56.55;
+let edgePre = -1;
+function edgeShow(d, prog) {
+  const el = $('#edgePull'), np = R.page + d;
+  if (!d || np < 0 || np >= R.pages) { el.classList.remove('show', 'ready'); return; }
+  el.classList.toggle('right', d > 0); el.classList.toggle('left', d < 0);
+  el.querySelector('.ep-num').textContent = np + 1;
+  el.querySelector('.ep-arrow').textContent = d > 0 ? '›' : '‹';
+  el.querySelector('.fg').style.strokeDashoffset = (RING * (1 - Math.min(1, prog))).toFixed(1);
+  el.classList.add('show');
+  el.classList.toggle('ready', prog >= 1);
+  // get the target page ready and sharp while the finger is still pulling
+  if (prog > 0.3 && edgePre !== np && R.it && R.it.pdf && R.pdfDoc) { edgePre = np; pdfRender(np, pdfQ(true)); }
+}
+function edgeTurn(d) {
+  const z = $('#zoomer'), A = Z.A, np = R.page + d;
+  if (np < 0 || np >= R.pages) return;
+  const shift = -d * A.w * 0.55;
+  $('#reader').classList.add('sliding');
+  z.style.transition = 'transform .17s cubic-bezier(.4,0,1,1), opacity .17s ease';
+  z.style.transform = `translate(${Z.tx + shift}px,${Z.ty}px) scale(${Z.s})`;
+  z.style.opacity = '0';
+  setTimeout(() => {
+    go(np, false);
+    // forward: start of the new page (top left); back: end of the previous page (bottom left)
+    Z.tx = A.x; Z.ty = d > 0 ? A.y : A.y + A.h - Z.LH * Z.s; clampZ();
+    z.style.transition = 'none';
+    z.style.transform = `translate(${Z.tx - shift * 0.5}px,${Z.ty}px) scale(${Z.s})`;
+    void z.offsetWidth;
+    z.style.transition = 'transform .26s cubic-bezier(0,0,.2,1), opacity .2s ease';
+    z.style.transform = `translate(${Z.tx}px,${Z.ty}px) scale(${Z.s})`;
+    z.style.opacity = '1';
+    setTimeout(() => { $('#reader').classList.remove('sliding'); applyZ(false); }, 280);
+  }, 170);
 }
 
 let dockT = 0;
@@ -1539,6 +1597,7 @@ function updateCount() {
     if (P.size === 2) {
       if (G && G.type === 'mark') { clearDraft(); if (G.erase && G.hits.size) { persistMarks(); renderMarks(); } }
       if (G && G.drag) go(R.page, false);
+      if (G && G.pan) { edgeShow(0); applyZ(false); }
       const m = mid();
       G = { type: 'pinch', d0: dist(), s0: Z.s, px: (m.x - Z.tx) / Z.s, py: (m.y - Z.ty) / Z.s };
     } else if (P.size === 1) {
@@ -1562,8 +1621,11 @@ function updateCount() {
       if (Math.abs(dx) > 6 || Math.abs(dy) > 6) G.moved = true;
       if (G.pan) {
         const want = G.tx0 + dx;
-        Z.tx = want; Z.ty = G.ty0 + dy; clampZ(); applyZ(false);
+        Z.tx = want; Z.ty = G.ty0 + dy; clampZ();
         G.over = want - Z.tx;
+        const rub = G.over ? Math.sign(G.over) * Math.min(70, Math.abs(G.over) * 0.32) : 0;
+        applyZ(false, rub);
+        edgeShow(G.over < -4 ? 1 : G.over > 4 ? -1 : 0, Math.abs(G.over) / EDGE_PULL);
       } else {
         if (!G.drag && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2) { G.drag = true; dragStart(); }
         if (G.drag) {
@@ -1593,11 +1655,13 @@ function updateCount() {
       return;
     }
     const g = G; G = null;
-    if (e.type === 'pointercancel') { if (g.drag) go(R.page, true); return; }
+    if (e.type === 'pointercancel') { if (g.drag) go(R.page, true); if (g.pan) { edgeShow(0); applyZ(true); } return; }
     const dx = pt.x - g.x0, dy = pt.y - g.y0, quick = g.t0 && Date.now() - g.t0 < 350;
     if (g.pan) {
-      if (Math.abs(g.over) > 70 && Math.abs(dx) > Math.abs(dy)) turn(g.over < 0 ? 1 : -1);
-      else if (!g.moved && quick) tap(pt);
+      edgeShow(0); edgePre = -1;
+      const d = g.over < 0 ? 1 : -1;
+      if (Math.abs(g.over) >= EDGE_PULL && R.page + d >= 0 && R.page + d < R.pages) edgeTurn(d);
+      else { if (g.over) applyZ(true); if (!g.moved && quick) tap(pt); }
       return;
     }
     if (g.drag) {
