@@ -346,7 +346,7 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
   padding: 14px max(12px, env(safe-area-inset-right, 0px)) 14px max(12px, env(safe-area-inset-left, 0px));
   touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
 }
-.reader.immersive .stage { padding-top: calc(env(safe-area-inset-top, 0px) + 10px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); }
+.reader.immersive .stage { padding: calc(env(safe-area-inset-top, 0px) + 8px) max(4px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 24px) max(4px, env(safe-area-inset-left, 0px)); }
 .zoomer { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .leaf {
   --px: 26px; --pt: 30px; --pb: 26px; --leaf-bg: var(--paper); --bind-l: rgba(120, 80, 30, .07); --bind-r: rgba(120, 80, 30, .05);
@@ -453,6 +453,32 @@ textarea:disabled { opacity: .55; }
   display: none; font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; pointer-events: none;
 }
 .reader.immersive .mini-pno { display: block; }
+.scrub-row { display: flex; align-items: center; gap: 10px; }
+.scrub-row .scrub { flex: 1; min-width: 0; }
+.fs-btn {
+  flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--card);
+  color: var(--ink-2); display: grid; place-items: center; cursor: pointer; transition: color .15s ease, background .15s ease, transform .12s ease;
+}
+.fs-btn:hover { color: var(--red); background: #fff5ee; }
+.fs-btn:active { transform: scale(.92); }
+.fs-btn svg { width: 15px; height: 15px; }
+.dock {
+  position: absolute; z-index: 6; right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  display: none; align-items: center; gap: 1px; padding: 3px; border-radius: 999px;
+  background: rgba(255, 253, 249, .74); -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3);
+  border: 1px solid rgba(110, 72, 36, .14); box-shadow: 0 8px 22px -12px rgba(60, 25, 8, .5);
+  transition: opacity .6s ease;
+}
+.reader.immersive .dock { display: flex; animation: fade .3s ease; }
+.reader.immersive.marking .dock, .reader.immersive .zoomctl { display: none; }
+.dock.dim { opacity: .3; }
+.dock button {
+  width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--ink-2);
+  display: grid; place-items: center; cursor: pointer; transition: background .15s ease, color .15s ease;
+}
+.dock button:hover, .dock button:active { background: var(--red-wash); color: var(--red); }
+.dock button svg { width: 17px; height: 17px; }
+.dock-sep { width: 1px; height: 18px; background: rgba(110, 72, 36, .2); margin: 0 2px; }
 
 .r-bot { padding-top: 8px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); }
 .scrub { width: 100%; accent-color: var(--red); height: 22px; margin: 0; }
@@ -637,6 +663,8 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
     <symbol id="i-free" viewBox="0 0 24 24"><path d="M3.5 15.5c2.5-6 4.8-6.4 6-3.2s2.2 5.4 4.8 1.6 4.2-6.3 6.2-3.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
     <symbol id="i-erase" viewBox="0 0 24 24"><path d="M9 20h11M4.8 15.3l9.9-9.9a2 2 0 0 1 2.8 0l2.1 2.1a2 2 0 0 1 0 2.8L12 18.9a2 2 0 0 1-1.4.6H8.3a2 2 0 0 1-1.4-.6l-2.1-2.1a2 2 0 0 1 0-2.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.5 10.5l5 5" stroke="currentColor" stroke-width="1.7"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-page" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V21H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3v5h5M9 12h7M9 15h7M9 18h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
     <symbol id="i-orn" viewBox="0 0 70 14"><path d="M2 7h22M46 7h22" stroke="currentColor" stroke-width="1"/><path d="M35 1.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="35" cy="7" r="1.6" fill="currentColor"/><circle cx="26.5" cy="7" r="1.1" fill="currentColor"/><circle cx="43.5" cy="7" r="1.1" fill="currentColor"/></symbol>
@@ -737,10 +765,19 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--re
       <button id="zIn" type="button" aria-label="Vergrößern">+</button>
     </div>
     <div class="mini-pno" id="miniPno"></div>
+    <div class="dock" id="dock" role="toolbar" aria-label="Werkzeuge im Vollbild">
+      <button type="button" id="dMark" aria-label="Markieren" title="Markieren"><svg><use href="#i-mark"/></svg></button>
+      <button type="button" id="dNote" aria-label="Notiz zu dieser Seite" title="Notiz"><svg><use href="#i-pen"/></svg></button>
+      <span class="dock-sep"></span>
+      <button type="button" id="dExit" aria-label="Vollbild beenden" title="Vollbild beenden"><svg><use href="#i-shrink"/></svg></button>
+    </div>
     <div class="loading" id="rLoading" hidden>Seiten werden gelegt …</div>
   </div>
   <footer class="r-bot">
-    <input class="scrub" id="scrub" type="range" min="1" max="1" value="1" aria-label="Seite wählen">
+    <div class="scrub-row">
+      <input class="scrub" id="scrub" type="range" min="1" max="1" value="1" aria-label="Seite wählen">
+      <button class="fs-btn" id="rFull" type="button" aria-label="Vollbild" title="Vollbild"><svg><use href="#i-expand"/></svg></button>
+    </div>
     <div class="r-row">
       <button class="pill left" id="rNote" type="button"><svg><use href="#i-pen"/></svg><span>Notiz</span></button>
       <div class="pageno" id="pageno" aria-live="polite"></div>
@@ -1373,11 +1410,28 @@ function turn(d) {
   if (wasZoomed) { Z.tx = Z.A.x; Z.ty = Z.A.y; clampZ(); applyZ(false); }
 }
 
+let dockT = 0;
+function wakeDock() {
+  const d = $('#dock'); d.classList.remove('dim');
+  clearTimeout(dockT); dockT = setTimeout(() => d.classList.add('dim'), 2800);
+}
+$('#rFull').addEventListener('click', () => toggleChrome());
+$('#dExit').addEventListener('click', () => toggleChrome());
+$('#dMark').addEventListener('click', () => setMarkMode(true));
+$('#dNote').addEventListener('click', () => openNotes('text', true));
+$('#dock').addEventListener('pointerdown', wakeDock);
+$('#stage').addEventListener('pointerdown', () => { if ($('#reader').classList.contains('immersive')) wakeDock(); }, true);
 function toggleChrome() {
   const rd = $('#reader');
   rd.classList.toggle('immersive');
+  const on = rd.classList.contains('immersive');
+  $('#rFull').setAttribute('aria-label', on ? 'Vollbild beenden' : 'Vollbild');
+  if (on) {
+    wakeDock();
+    if (!lsGet('glut.fshint')) { lsSet('glut.fshint', 1); toast('Vollbild: Unten rechts bleiben Markieren und Notiz. Tippe in die Mitte oder auf ⤡ zum Beenden.', 5500); }
+  }
   if (!R.start) return;
-  if (S.view === 'orig') {
+  if (S.view === 'orig' || (R.it && R.it.pdf)) {
     const keep = Z.s > Z.base * 1.02;
     sizeLeaf(); if (!keep) Z.s = Z.base; clampZ(); applyZ(false);
   } else layout(anchorFor(R.page));
@@ -1651,9 +1705,12 @@ function setMarkMode(on) {
   $('#rMark').setAttribute('aria-pressed', on);
   $('#markTools').hidden = !on;
   closePop(); clearDraft();
+  if (!on && $('#reader').classList.contains('immersive')) wakeDock();
   if (on) {
     M.erase = false; updateTools();
-    if (!lsGet('glut.markhint')) { lsSet('glut.markhint', 1); toast('Über Text streichen markiert ganze Wörter. Auf freien Flächen zeichnest du frei. Zwei Finger zoomen weiter.', 6500); }
+    $('#rFull').blur();
+    const hk = R.it && R.it.pdf ? 'glut.markhint.pdf' : 'glut.markhint';
+    if (!lsGet(hk)) { lsSet(hk, 1); toast(R.it && R.it.pdf ? 'Mit dem Finger über die Seite streichen markiert. Gerade Striche werden automatisch begradigt. Zwei Finger zoomen weiter.' : 'Über Text streichen markiert ganze Wörter. Auf freien Flächen zeichnest du frei. Zwei Finger zoomen weiter.', 6500); }
   }
 }
 
